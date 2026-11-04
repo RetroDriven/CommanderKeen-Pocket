@@ -63,6 +63,4 @@ Use Start → Save/Load for manual saves. Auto Save On writes a verified checkpo
 
 ## Source and credits
 
-[BUILDING.md](BUILDING.md), [PACKAGING.md](PACKAGING.md) and [GitHub setup](GitHub/GITHUB_SETUP.md) cover source builds and publishing. Public downloads include corresponding source for the compiled application.
-
 See [CREDITS.md](CREDITS.md), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [LICENSE](LICENSE). Original games/artwork retain their owners' rights. This is an independent community port, not an official Analogue or Commander Keen release.
