@@ -1,0 +1,14 @@
+{
+    "name": "View Mode",
+    "id": 12,
+    "type": "list",
+    "enabled": true,
+    "persist": true,
+    "address": "0xF7000000",
+    "defaultval": 1,
+    "mask": "0xFFEFFFFF",
+    "options": [
+        { "name": "Original (200 lines)", "value": "0x00000000" },
+        { "name": "Enhanced (240 lines)", "value": "0x00100000" }
+    ]
+}

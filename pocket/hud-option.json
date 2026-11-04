@@ -1,0 +1,15 @@
+{
+    "name": "HUD",
+    "id": 13,
+    "type": "list",
+    "enabled": true,
+    "persist": true,
+    "address": "0xF7000000",
+    "defaultval": 1,
+    "mask": "0xFFD7FFFF",
+    "options": [
+        { "name": "Original", "value": "0x00200000" },
+        { "name": "Enhanced", "value": "0x00280000" },
+        { "name": "Off", "value": "0x00000000" }
+    ]
+}

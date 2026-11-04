@@ -1,0 +1,17 @@
+{
+    "name": "Core Volume",
+    "id": 14,
+    "type": "list",
+    "enabled": true,
+    "persist": true,
+    "address": "0xF700000C",
+    "defaultval": 0,
+    "mask": "0x00000000",
+    "options": [
+        {"name": "100%", "value": "0x00000064"},
+        {"name": "75%", "value": "0x0000004B"},
+        {"name": "50%", "value": "0x00000032"},
+        {"name": "25%", "value": "0x00000019"},
+        {"name": "Mute", "value": "0x00000001"}
+    ]
+}

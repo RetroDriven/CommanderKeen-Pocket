@@ -1,0 +1,15 @@
+# Where to obtain the games
+
+Purchasing or downloading a game and having a version supported by this converter are separate questions. The generator validates exact DOS executable/resource sets listed in [REQUIRED_FILES.md](REQUIRED_FILES.md); it does not download games or convert arbitrary revisions.
+
+| Episodes | Sources | Compatibility with this release |
+| --- | --- | --- |
+| Keen 1–5 | [Steam: Commander Keen](https://store.steampowered.com/app/9180/Commander_Keen/) or [GOG: Commander Keen Complete Pack](https://www.gog.com/en/game/commander_keen_complete_pack) | The current profiles were tested against the local Steam DOS collection. GOG sells the same five episodes, but its current files have not been independently hash-tested here. The generator checks them before writing a pack. |
+| Keen 1 | Original shareware episode, available from [DOS Games Archive](https://www.dosgamesarchive.com/download/commander-keen-invasion-of-the-vorticons/) | Use the complete installed DOS episode. The linked download's exact revision has not been validated here. |
+| Keen 4 | Original EGA shareware episode, available from [DOS Games Archive](https://www.dosgamesarchive.com/download/commander-keen-goodbye-galaxy/) | Choose EGA, not CGA. The linked download's exact revision has not been validated here. |
+| Keen 6 | An original retail copy you own, or a legitimate secondhand original | [KeenWiki](https://keenwiki.shikadi.net/wiki/Keen_6) reports that distribution-rights complications leave secondhand copies as the purchase route. Keen 6 is not included in the Steam/GOG Complete Pack. This importer requires the verified full EGA set; the demo is not a substitute. |
+| Keen Dreams | An original DOS copy you own; a DOS shareware release is listed by [DOS Games Archive](https://www.dosgamesarchive.com/download/commander-keen-keen-dreams/) | The converter supports the linked **EGA DOS v1.13 shareware** release, plus the existing v1.00 retail set. Extract the nested keendrms.zip as well. Shareware is provided under its original trial/distribution terms; it is not an unrestricted freeware license. |
+
+Keen Dreams is separate from the Keen 1–5 Complete Pack. The preferred retail source is [Keen Dreams: Definitive Edition on Steam](https://store.steampowered.com/app/2496830/Commander_Keen_in_Keen_Dreams_Definitive_Edition/). Its [DOS versions update](https://store.steampowered.com/news/app/2496830/view/573756970376365204) added original DOS copies. This converter supports the **EGA DOS v1.93** files in **DOS/EGA** from the tested installation. Select that subfolder; the modern native remake and DOS/CGA files are not interchangeable.
+
+Prefer retail v1.93 for new installations; v1.13 is the supported shareware alternative. Existing v1.00 installations remain supported. Saves from different Dreams revisions are kept incompatible to prevent loading incorrect actor states; back up your save folder before changing revisions.

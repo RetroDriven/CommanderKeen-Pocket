@@ -1,0 +1,24 @@
+{
+    "name": "Auto Save",
+    "id": 10,
+    "type": "list",
+    "enabled": true,
+    "persist": true,
+    "address": "0xF7000000",
+    "defaultval": 0,
+    "mask": "0xFF3FFFFF",
+    "options": [
+        {
+            "name": "On",
+            "value": "0x00000000"
+        },
+        {
+            "name": "Prompt",
+            "value": "0x00400000"
+        },
+        {
+            "name": "Off",
+            "value": "0x00800000"
+        }
+    ]
+}
