@@ -11,7 +11,7 @@ See [Where to obtain the games](GETTING_THE_GAMES.md) for Steam, GOG, shareware 
 ## Install on Pocket (Windows)
 
 1. Extract **RetroDriven.CommanderKeen-v1.0.0.zip** into the Pocket SD root, merging **Cores, Assets, Platforms and Presets**.
-2. Download and run **RetroDriven.CommanderKeen-GamePrep-v1.0.0.exe** from the Releases page
+2. Download and run **RetroDriven.CommanderKeen-GamePrep-v1.0.0.exe**
 3. Click **Add folder...** to select your installed DOS episodes or a parent containing them. Add other locations as needed. For Steam Dreams, choose **DOS/EGA**. See [REQUIRED_FILES.md](REQUIRED_FILES.md) or the tool's **Required DOS files** button.
 4. Choose **Prepared files on this PC**. The default is **Documents/CommanderKeen-Prepared**.
 5. Optionally choose the **Pocket SD root** where you installed the core. Leave this blank to prepare files without writing to the card.
