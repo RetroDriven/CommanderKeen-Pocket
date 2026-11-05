@@ -12,7 +12,7 @@ enum {KV_GROUND,KV_CHARGE,KV_AIR,KV_POGO_GROUND,KV_POGO_AIR};
 #define KV_WALL 8u
 typedef struct {int32_t fx,fy;int vx,vy,saved;unsigned mode,time,charge,pogo,pending;} KeenVortMotion;
 static inline void keen_vort_reset(KeenVortMotion *v,const KeenMotion *p){
- memset(v,0,sizeof(*v));v->fx=p->x*256;v->fy=p->y*256;v->mode=p->grounded?KV_GROUND:KV_AIR;
+ memset(v,0,sizeof(*v));v->fx=p->x*256;v->fy=p->y*256+(p->grounded?255:0);v->mode=p->grounded?KV_GROUND:KV_AIR;
 }
 static inline int kv_floor(int32_t v){return v>=0?v/256:-((-v+255)/256);}
 static inline int kv_limit(int v){return v>120?120:v< -120?-120:v;}
@@ -27,21 +27,27 @@ static inline int kv_column(KeenSolid f,void*u,int x,int top,int bottom,int face
 static inline unsigned kv_move(KeenVortMotion *v,KeenMotion *p,int dx,int dy,KeenSolid f,void *u){
  unsigned e=0;int old_ground=p->grounded;
  int extra=v->mode==KV_POGO_GROUND||v->mode==KV_POGO_AIR;
- int32_t nx=v->fx+dx;int target=kv_floor(nx),step=dx<0?-1:1;
- while(p->x!=target){int edge=p->x+(step>0?8:-1),face=step>0?KEEN_FACE_LEFT:KEEN_FACE_RIGHT;
-  if(kv_column(f,u,edge,p->y-extra,p->y+22,face)){
-   e|=KV_WALL;nx=p->x*256;break;
-  }p->x+=step;
- }v->fx=nx;
- int32_t ny=v->fy+dy;target=kv_floor(ny);step=dy<0?-1:1;p->grounded=0;
+ /* Resolve vertical travel first, as CVort_check_ground does. A tile face
+  * blocks only when crossed; its interior is passable for one-way tiles. */
+ int32_t ny=v->fy+dy;int target=kv_floor(ny),step=dy<0?-1:1;p->grounded=0;
  while(p->y!=target){int edge=p->y+(step>0?23:-1-extra),face=step>0?KEEN_FACE_TOP:KEEN_FACE_BOTTOM;
-  if(kv_edge(f,u,p->x,edge,face)||kv_edge(f,u,p->x+7,edge,face)){
+  int crossing=edge<0 || (step>0?edge%16==0:edge%16==15);
+  if(crossing && (kv_edge(f,u,p->x,edge,face)||kv_edge(f,u,p->x+7,edge,face))){
    if(step>0)p->grounded=1;else e|=KV_HEAD;
-   v->vy=0;ny=p->y*256;break;
+   v->vy=0;ny=p->y*256+(step>0?255:0);break;
   }p->y+=step;
  }v->fy=ny;
- if(v->vy>=0 && (kv_edge(f,u,p->x,p->y+23,KEEN_FACE_TOP)||kv_edge(f,u,p->x+7,p->y+23,KEEN_FACE_TOP))){
-  p->grounded=1;v->vy=0;v->fy=p->y*256;
+ int32_t nx=v->fx+dx;target=kv_floor(nx);step=dx<0?-1:1;
+ while(p->x!=target){int edge=p->x+(step>0?8:-1),face=step>0?KEEN_FACE_LEFT:KEEN_FACE_RIGHT;
+  int crossing=edge<0 || (step>0?edge%16==0:edge%16==15);
+  if(crossing && kv_column(f,u,edge,p->y-extra,p->y+22,face)){
+   e|=KV_WALL;v->vx=0;nx=p->x*256;break;
+  }p->x+=step;
+ }v->fx=nx;
+ if(v->vy>=0 && v->fy==p->y*256+255 && (p->y+23)%16==0 &&
+    (kv_edge(f,u,p->x,p->y+23,KEEN_FACE_TOP)||kv_edge(f,u,p->x+7,p->y+23,KEEN_FACE_TOP))){
+  /* The original inclusive bottom point rests one fixed unit above the face. */
+  p->grounded=1;v->vy=0;v->fy=p->y*256+255;
  }
  if(!old_ground && p->grounded)e|=KV_LAND;
  p->vx=v->vx;p->vy=v->vy;return e;

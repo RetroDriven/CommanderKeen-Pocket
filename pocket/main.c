@@ -1,5 +1,5 @@
 /*
- * RetroDriven Commander Keen Pocket v1.0.0 - Keen 1-6 and Keen Dreams engines.
+ * RetroDriven Commander Keen Pocket v1.0.1 - Keen 1-6 and Keen Dreams engines.
  * SPDX-License-Identifier: MIT
  * Behavioral references: bundled Chocolate Keen and Omnispeak sources.
  * Game data is loaded from keenpack.bin through APF data slot 4.
@@ -1311,6 +1311,12 @@ static void update_play(void){
                 teleport_x=world_x/16;teleport_y=world_y/16;teleport_phase=17;teleport_pending=0;autosave_after_teleport=1;world_camera();return;
             }
             if(!exit_active){return_world(1);return;}
+            /* Finish the exit sound before loading the map or writing a save. */
+            if(exit_fx>=exit_tile_x*4096){
+                sound_update();
+                if(sound_voice<0)return_world(1);
+                return;
+            }
             keen_sfx_clock_step(&movement_sfx,of_time_us());
             unsigned dt=movement_sfx.ticks-motion_ticks;motion_ticks=movement_sfx.ticks;
             if(dt>64)dt=64;
@@ -1328,9 +1334,10 @@ static void update_play(void){
             }
             (void)keen_weapon_step_contacts(&weapon,dt,0,0,1,player.x-4,player.y-1,
                 &gameplay.ammo,collision_cb,0,actor_shot_contact,0);weapon_ticks=movement_sfx.ticks;
-            exit_fx+=(int32_t)dt*60;player.x=kv_floor(exit_fx)+4;
+            exit_fx+=(int32_t)dt*60;
+            if(exit_fx>exit_tile_x*4096)exit_fx=exit_tile_x*4096;
+            player.x=kv_floor(exit_fx)+4;
             player_animation.frame=(movement_sfx.ticks>>4)&3u;
-            if(exit_fx>=exit_tile_x*4096)return_world(1);
             return;
         }
         if(of_btn_pressed(OF_BTN_A)){
@@ -1501,7 +1508,7 @@ static void play_frame(uint8_t *fb){
             if(run>W-sx)run=W-sx;
             if(tx<level_info.width){
                 unsigned tile=runtime_tile(tx,ty);
-                if(selected!=0&&selected<3&&tile<tile_atlas_count)tile=menu_tile_frames[(movement_sfx.ticks>>4)&3u][tile];
+                if(selected<3&&tile<tile_atlas_count)tile=menu_tile_frames[(movement_sfx.ticks>>4)&3u][tile];
                 if(tile<tile_atlas_count){
                     memcpy(line+sx,tile_atlas+tile*256u+py*16u+wx%16u,(size_t)run);
                 }else for(int k=0;k<run;k++){
@@ -1651,7 +1658,7 @@ static unsigned world_tile(unsigned x,unsigned y){
  * preserve destination bits selected by the mask, replace the other bits. */
 static void foreground_tiles_frame(uint8_t *fb,int world){
     if(!collision_exact||map_state!=1)return;
-    unsigned phase=selected!=0&&selected<3?(movement_sfx.ticks>>4)&3u:0;
+    unsigned phase=selected<3?(movement_sfx.ticks>>4)&3u:0;
     for(unsigned ty=(unsigned)play_camera_y/16u;ty<level_info.height&&ty<=(unsigned)(play_camera_y+H-1)/16u;ty++)
     for(unsigned tx=(unsigned)play_camera_x/16u;tx<level_info.width&&tx<=(unsigned)(play_camera_x+W-1)/16u;tx++){
         unsigned tile=world?world_tile(tx,ty):runtime_tile(tx,ty);
@@ -1809,7 +1816,7 @@ static void scene_tiles_frame_mode(uint8_t *fb,int world,int animate){
 static void scene_tiles_frame(uint8_t *fb,int world){scene_tiles_frame_mode(fb,world,0);}
 static void world_frame(uint8_t *fb){
     if(autosave_result && keen_core_autosave_mode()==KCO_AUTOSAVE_OFF)autosave_result=0;
-    if(selected!=0&&selected<3){menu_animation_clock.ticks=movement_sfx.ticks;scene_tiles_frame_mode(fb,1,1);}else scene_tiles_frame(fb,1);
+    if(selected<3){menu_animation_clock.ticks=movement_sfx.ticks;scene_tiles_frame_mode(fb,1,1);}else scene_tiles_frame(fb,1);
     unsigned animated=of_btn(OF_BTN_LEFT|OF_BTN_RIGHT|OF_BTN_UP|OF_BTN_DOWN)?((movement_sfx.ticks>>4)&3u):0u;
     if(selected!=2||!world3.mounted)draw_masked_sprite(fb,world_x-play_camera_x,world_y-play_camera_y,world_frame_index+animated,0);
     if(selected==2&&world3.ready)draw_masked_sprite(fb,world3.x/256-play_camera_x,world3.y/256-play_camera_y,world3.frame+((movement_sfx.ticks>>1)&1u),0);
